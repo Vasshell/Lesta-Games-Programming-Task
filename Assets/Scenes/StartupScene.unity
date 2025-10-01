@@ -149,7 +149,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f60e9d8bdef7204cad9acd87fbe0f3e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameDirector
-  gameState: 0
 --- !u!4 &1924655332
 Transform:
   m_ObjectHideFlags: 0

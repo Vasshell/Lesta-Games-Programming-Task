@@ -7,12 +7,10 @@ using UnityEngine.SceneManagement;
 
 public class GameDirector : MonoBehaviour
 {
-    public GameState gameState;
-    private StringEventListener eventListener;
+    public static GameState gameState;
 
     private void Start()
     {
-        eventListener = GetComponent<StringEventListener>();
         MainMenu();
     }
 
@@ -59,12 +57,14 @@ public class GameDirector : MonoBehaviour
 
     private void Fight()
     {
-        throw new NotImplementedException();
+        gameState = GameState.Fight;
+        UnloadLastScene();
+        SceneManager.LoadScene(3, LoadSceneMode.Additive);
     }
 
     private void NewGame()
     {
-        gameState = GameState.UpgradeMenu;
+        gameState = GameState.NewGame;
         UnloadLastScene();
         SceneManager.LoadScene(2, LoadSceneMode.Additive);
     }
@@ -78,6 +78,7 @@ public class GameDirector : MonoBehaviour
     public enum GameState
     {
         MainMenu,
+        NewGame,
         UpgradeMenu,
         Fight,
         GameOver

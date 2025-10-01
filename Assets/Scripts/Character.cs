@@ -1,52 +1,50 @@
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.TextCore.Text;
 
 public class Character : MonoBehaviour
 {
+    private int _attStrength;
+    private int _attAgility;
+    private int _attStamina;
+    private int _clRogue = 0;
+    private int _clWarrior = 0;
+    private int _clBerserker = 0;
+    private int _level = 0;
+    private List<Ability> _abilities;
 
-    public int health { get; private set; }
-    public int attStrength { get; private set; }
-    public int attAgility { get; private set; }
-    public int damage { get; private set; }   
-    public int attStamina { get; private set; }
-
-    // TODO: Прописать здоровье и оружие, урон. Более гибкое назначение классов?
-    // TODO: ДОпустить различия персонажа игрока и персонажа врага (разные классы)
-
-    void Attack(Character attacked)
+    public void NewPlayerCharacter()
     {
-        print($"{this.name}: Attacking!");
-        attacked.TakeDamage(damage);
+        _attStrength = Random.Range(1, 3);
+        _attAgility = Random.Range(1, 3);
+        _attStamina = Random.Range(1, 3);
     }
 
-    void TakeDamage(int recieved_damage)
+    public (int strength, int agility, int stamina) GetStats()
     {
-        print($"{this.name}: {recieved_damage} damage taken");
-        health -= recieved_damage;
+        return (_attStrength,_attAgility,_attStamina);
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public (int rogue, int warrior, int berserker) GetLevels()
     {
-        health = 10;
-        damage = Random.Range(1, 4);
-        attAgility = Random.Range(1, 3);
-        attStamina = Random.Range(1, 3);
-        attStrength = Random.Range(1, 3);
-        print($"{this.name}: All set!");
+        return (_clRogue, _clWarrior, _clBerserker);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AddAbility(Ability ability)
     {
-        
+        _abilities.Add(ability);
     }
 
-    public void OnMyTurn(Character combatant)
+    public void RemoveAbility(Ability ability)
     {
-        print($"It's {this.name} turn!");
-        Attack(combatant);
+        _abilities.Remove(ability);
     }
 
+    public void SetWarriorLevel(int level) => _clWarrior = level;
+    public void SetRogueLevel(int level) => _clRogue=level;
+    public void SetBerserkerLevel(int level) => _clBerserker=level;
+    public void LevelUp() => _level += 1;
+    public int GetLevel() => _level;
 }
