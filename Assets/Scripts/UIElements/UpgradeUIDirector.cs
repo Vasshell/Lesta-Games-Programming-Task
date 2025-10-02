@@ -12,11 +12,9 @@ public class UpgradeUIDirector : MonoBehaviour
 {
     [SerializeField] public GameObject buttonPrefab;
     [SerializeField] public GameObject labelPrefab;
-    [SerializeField] private Vector2 _topButtonCoords;
-    [SerializeField] private Vector2 _middleButtonCoords;
-    [SerializeField] private Vector2 _bottomButtonCoords; 
-    [SerializeField] private Vector2 _weaponButtonCoords;
-    [SerializeField] private Vector2 _statTextCoords;
+    [SerializeField] private UIPositionMarker[] _buttonCoords;
+    [SerializeField] private UIPositionMarker _weaponButtonCoords;
+    [SerializeField] private UIPositionMarker _statTextCoords;
     private Dictionary<Vector2, UIButton> _buttons = new Dictionary<Vector2, UIButton>();
     private UIButton _weaponButton;
     private Canvas _canvas;
@@ -24,16 +22,18 @@ public class UpgradeUIDirector : MonoBehaviour
 
     private void Start()
     {
-        SetFreeButtonsCoords();
         _canvas = GetComponentInParent<Canvas>();
         _statText = Instantiate(labelPrefab, _canvas.transform).GetComponent<UIText>();
+        _statText.AssignCoordinates(_statTextCoords.GetPosition());
+        SetFreeButtonsCoords();
     }
 
     private void SetFreeButtonsCoords()
     {
-        _buttons.Add(_topButtonCoords, null);
-        _buttons.Add(_middleButtonCoords, null);
-        _buttons.Add(_bottomButtonCoords, null);
+        foreach (var button in _buttonCoords)
+        {
+            _buttons.Add(button.GetPosition(), null);
+        }
     }
 
     public void DisplayStatNumbers((int strength, int agility, int stamina) stats)
@@ -41,7 +41,7 @@ public class UpgradeUIDirector : MonoBehaviour
         _statText.AssignText($"Сила: {stats.strength} Ловкость: {stats.agility} Выносливость: {stats.stamina}");
     }
 
-    public void DisplayButton(UnityAction action, string text)
+    public void DisplayButton(UnityAction action, string text, string description = null)
     {
         foreach (var button in _buttons)
         {
@@ -54,7 +54,7 @@ public class UpgradeUIDirector : MonoBehaviour
         throw new Exception("More buttons than expected");
     }
 
-    private UIButton CreateNewButton(Vector2 coords, string text, UnityAction action)
+    private UIButton CreateNewButton(Vector2 coords, string text, UnityAction action, string description = null)
     {
         GameObject gameObject = Instantiate(buttonPrefab, _canvas.transform);
         UIButton uIButton = gameObject.GetComponent<UIButton>();

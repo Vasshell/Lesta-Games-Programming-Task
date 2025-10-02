@@ -4,15 +4,21 @@ using UnityEngine.Events;
 
 public class UpgradeDirector : MonoBehaviour
 {
-    [SerializeField] Character _playerCharacter;
     [SerializeField] UpgradeUIDirector _upgradeUIDirector;
     [SerializeField] AbilitiesDictionary _abilitiesDictionary;
     [SerializeField] StringEventChannel _channel;
+    [SerializeField] public GameObject playerPrefab;
+    [SerializeField] private PositionMarker _playerPositionMarker;
+    private Character _playerCharacter;
 
     private void Start()
     {
         if (GameDirector.gameState == GameDirector.GameState.NewGame)
         {
+            var newplayer = Instantiate(playerPrefab);
+            newplayer.transform.position = _playerPositionMarker.GetPosition();
+            DontDestroyOnLoad(newplayer);
+            _playerCharacter = newplayer.GetComponent<Character>();
             _playerCharacter.NewPlayerCharacter();
         }
         DisplayStats();

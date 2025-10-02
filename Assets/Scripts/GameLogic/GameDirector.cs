@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class GameDirector : MonoBehaviour
 {
     public static GameState gameState;
+    private GameObject _player;
 
     private void Start()
     {
@@ -74,6 +75,8 @@ public class GameDirector : MonoBehaviour
         var lastSceneIndex = SceneManager.sceneCount - 1;
         if (lastSceneIndex > 0) SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(lastSceneIndex));
     }
+
+    public void SetPlayerReference(GameObject player) => _player = player;
 
     public enum GameState
     {
