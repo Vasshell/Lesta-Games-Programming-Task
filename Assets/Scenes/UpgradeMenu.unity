@@ -332,11 +332,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 630
+      value: 530
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 239
+      value: 193
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -445,11 +445,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 630
+      value: 530
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 73
+      value: 68
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -542,11 +542,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 628
+      value: 530
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -258
+      value: -219
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -826,7 +826,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 2
+  orthographic size: 1
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -975,11 +975,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 630
+      value: 530
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -90
+      value: -75
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1088,11 +1088,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -602
+      value: -359
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -273
+      value: -137
       objectReference: {fileID: 0}
     - target: {fileID: 6368422714572949023, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1156,10 +1156,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeDirector
   _upgradeUIDirector: {fileID: 1037154229}
-  _abilitiesDictionary: {fileID: 11400000, guid: 4f2e1cd71ec150a47bc9f5b66d7fc154, type: 2}
+  _abilitiesDictionary: {fileID: 11400000, guid: 196ab45ec3f1691409179924cddccf4c, type: 2}
   _channel: {fileID: 11400000, guid: ef0c409b26cb4a647a01eb07ea41b4d2, type: 2}
   playerPrefab: {fileID: 514641651285323732, guid: 50a30e7ee5c9b5949961070a8e7afd60, type: 3}
+  _weaponDictionary: {fileID: 11400000, guid: c2565c0d8b3f36f4793ce67e32567ac7, type: 2}
   _playerPositionMarker: {fileID: 1396323163}
+  _characterStore: {fileID: 11400000, guid: 35080c8183bbb27469362ff76a908307, type: 2}
+  _defaultAbilities:
+  - rogue1
+  - warrior1
+  - berserker1
 --- !u!114 &2060556318 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 733710125951836135, guid: b1e6952899a39194fb72db2f445d0d29, type: 3}

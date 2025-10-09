@@ -8,15 +8,15 @@ using UnityEngine.SceneManagement;
 public class GameDirector : MonoBehaviour
 {
     public static GameState gameState;
-    private GameObject _player;
 
     private void Start()
     {
-        MainMenu();
+        ChangeState("restart");
     }
 
     public void ChangeState(string state)
     {
+        UnloadLastScene();
         switch (state)
         {
             case "newgame":
@@ -37,12 +37,17 @@ public class GameDirector : MonoBehaviour
             default:
                 throw new InvalidOperationException("Invalid state passed");
         }
+        SceneManager.sceneLoaded += MakeLastSceneActive;
+    }
+
+    private void MakeLastSceneActive(UnityEngine.SceneManagement.Scene arg0, LoadSceneMode arg1)
+    {
+        SceneManager.SetActiveScene(SceneManager.GetSceneAt(GetLastSceneIndex()));
     }
 
     private void MainMenu()
     {
         gameState = GameState.MainMenu;
-        UnloadLastScene();
         SceneManager.LoadScene(1, LoadSceneMode.Additive);
     }
 
@@ -59,24 +64,23 @@ public class GameDirector : MonoBehaviour
     private void Fight()
     {
         gameState = GameState.Fight;
-        UnloadLastScene();
         SceneManager.LoadScene(3, LoadSceneMode.Additive);
     }
 
     private void NewGame()
     {
         gameState = GameState.NewGame;
-        UnloadLastScene();
         SceneManager.LoadScene(2, LoadSceneMode.Additive);
     }
 
+    private int GetLastSceneIndex() => SceneManager.sceneCount - 1;
+
     private void UnloadLastScene()
     {
-        var lastSceneIndex = SceneManager.sceneCount - 1;
+        SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
+        var lastSceneIndex = GetLastSceneIndex();
         if (lastSceneIndex > 0) SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(lastSceneIndex));
     }
-
-    public void SetPlayerReference(GameObject player) => _player = player;
 
     public enum GameState
     {

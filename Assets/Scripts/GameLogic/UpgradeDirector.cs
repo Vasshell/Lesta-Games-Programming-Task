@@ -8,21 +8,34 @@ public class UpgradeDirector : MonoBehaviour
     [SerializeField] AbilitiesDictionary _abilitiesDictionary;
     [SerializeField] StringEventChannel _channel;
     [SerializeField] public GameObject playerPrefab;
+    [SerializeField] private WeaponDictionary _weaponDictionary;
     [SerializeField] private PositionMarker _playerPositionMarker;
+    [SerializeField] private CharacterStore _characterStore;
+    [SerializeField] private List<string> _defaultAbilities;
+
+    private GameObject _playerObject;
     private Character _playerCharacter;
 
     private void Start()
     {
+        SpawnPlayer();
         if (GameDirector.gameState == GameDirector.GameState.NewGame)
         {
-            var newplayer = Instantiate(playerPrefab);
-            newplayer.transform.position = _playerPositionMarker.GetPosition();
-            DontDestroyOnLoad(newplayer);
-            _playerCharacter = newplayer.GetComponent<Character>();
             _playerCharacter.NewPlayerCharacter();
         }
+        else
+        {
+            _playerCharacter.LoadCharacter(_characterStore);
+        }
         DisplayStats();
-        DisplayAbilitiesAvailable();
+        DisplayAbilitiesAvailable(GetAbilitiesAvailable(_defaultAbilities));
+    }
+
+    private void SpawnPlayer()
+    {
+        _playerObject = Instantiate(playerPrefab);
+        _playerObject.transform.position = _playerPositionMarker.GetPosition();
+        _playerCharacter = _playerObject.GetComponent<Character>();
     }
 
     private void DisplayStats()
@@ -30,13 +43,14 @@ public class UpgradeDirector : MonoBehaviour
         _upgradeUIDirector.DisplayStatNumbers(_playerCharacter.GetStats());
     }
 
-    private void DisplayAbilitiesAvailable()
+    private void DisplayAbilitiesAvailable(List<Ability> abilitiesAvailable)
     {
         if (_playerCharacter.GetLevel() < 3)
         {
-            _upgradeUIDirector.DisplayButton(delegate { AddRogueAbility(_playerCharacter.GetLevels().rogue +1); }, _abilitiesDictionary["ability1"].name);
-            _upgradeUIDirector.DisplayButton(delegate { AddBerserkerAbility(_playerCharacter.GetLevels().berserker +1); }, _abilitiesDictionary["ability1"].name);
-            _upgradeUIDirector.DisplayButton(delegate { AddWarriorAbility(_playerCharacter.GetLevels().warrior +1); }, _abilitiesDictionary["ability1"].name);
+            foreach (Ability ability in abilitiesAvailable)
+            {
+                _upgradeUIDirector.DisplayButton(delegate { AddAbility(ability); }, ability.title, ability.description);
+            }
         }
     }
     
@@ -45,37 +59,59 @@ public class UpgradeDirector : MonoBehaviour
         
     }
 
-    private void AddWarriorAbility(int level)
+    private void AddAbility(Ability ability)
     {
-        Debug.Log("Warrior " + level);
-        _playerCharacter.SetWarriorLevel(level);
+        if (ability.type == AbilityType.Permanent)
+        {
+            _playerCharacter.ApplyPermanentAbility(ability);
+        }
+        else _playerCharacter.AddAbility(ability);
+        if (GameDirector.gameState == GameDirector.GameState.NewGame)
+        {
+            switch (ability.idName)
+            {
+                case "rogue1":
+                    _playerCharacter.SetWeapon(_weaponDictionary["dagger"]);
+                        break;
+                
+                case "warrior1": _playerCharacter.SetWeapon(_weaponDictionary["sword"]);
+                        break;
+                
+                case "berserker1": _playerCharacter.SetWeapon(_weaponDictionary["club"]);
+                        break;
+                
+            }
+        }
+        if (ability.idName.StartsWith("rogue")) _playerCharacter.SetHealth(_playerCharacter.GetHealth()+4);
+        if (ability.idName.StartsWith("warrior")) _playerCharacter.SetHealth(_playerCharacter.GetHealth()+5);
+        if (ability.idName.StartsWith("berserker")) _playerCharacter.SetHealth(_playerCharacter.GetHealth()+6);
+        DisplayStats();
         AbilityChosen();
     }
 
-    private void AddRogueAbility(int level)
+    private void AddWeapon(Weapon weapon) => _playerCharacter.SetWeapon(weapon);
+
+    private List<Ability> GetAbilitiesAvailable(List<string> abilityNames)
     {
-        Debug.Log("Rogue " + level);
-        _playerCharacter.SetRogueLevel(level);
-        AbilityChosen();
-    }
-
-    private void AddBerserkerAbility(int level)
-    {
-        Debug.Log("Berserker " + level);
-        _playerCharacter.SetBerserkerLevel(level);
-        AbilityChosen();
-
-    }
-
-    private void AddWeapon()
-    {
-
+        List<Ability> abilitiesAvailable = new List<Ability>();
+        foreach (string abilityName in abilityNames)
+        {
+            var newAbility = _abilitiesDictionary[_playerCharacter.FindNextAbility(abilityName)];
+            abilitiesAvailable.Add(newAbility);
+        }
+        return abilitiesAvailable;
     }
 
     private void AbilityChosen()
     {
         _playerCharacter.LevelUp();
         _upgradeUIDirector.RemoveButtons();
-        _upgradeUIDirector.DisplayButton(delegate { _channel.RaiseEvent("fight"); }, "Продолжить");
+        _upgradeUIDirector.DisplayButton(delegate { ExitMenu(); }, "Продолжить");
+    }
+
+    private void ExitMenu()
+    {
+        _characterStore.SetCharacter(_playerCharacter);
+        _channel.RaiseEvent("fight");
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,6 +10,7 @@ public class UIButton : MonoBehaviour
     private Button _button;
     private Image _image;
     private RectTransform _rectTransform;
+    private string _hoverDescription;
 
     void Awake()
     {   
@@ -37,6 +39,8 @@ public class UIButton : MonoBehaviour
     {
         _button.onClick.AddListener(unityAction);
     }
+
+    public void AssignDescription(string description) => _hoverDescription = description;
 
     public Vector2 GetCoordinates() => _rectTransform.anchoredPosition;
     public void DestroyButton() => Destroy(this.gameObject);

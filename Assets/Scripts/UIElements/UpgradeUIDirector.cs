@@ -47,7 +47,7 @@ public class UpgradeUIDirector : MonoBehaviour
         {
             if (button.Value == null)
             {
-                _buttons[button.Key] = CreateNewButton(button.Key, text, action);
+                _buttons[button.Key] = CreateNewButton(button.Key, text, action, description);
                 return;
             } 
         }
@@ -61,6 +61,7 @@ public class UpgradeUIDirector : MonoBehaviour
         uIButton.AssignCoorditates(coords);
         uIButton.AssignText(text);
         uIButton.AssignDelegate(action);
+        if (description != null) uIButton.AssignDescription(description);
         return uIButton;
     }
 
@@ -69,8 +70,11 @@ public class UpgradeUIDirector : MonoBehaviour
         List<UIButton> killedButtons = new List<UIButton>();
         foreach(var button in _buttons)
         {
-            var killbutton = button.Value;
-            killedButtons.Add(killbutton);
+            if (button.Value != null)
+            {
+                var killbutton = button.Value;
+                killedButtons.Add(killbutton);
+            }
         }
         _buttons.Clear();
         SetFreeButtonsCoords();

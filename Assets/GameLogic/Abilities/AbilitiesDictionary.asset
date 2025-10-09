@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d94221943e6d4ec4cb30eef5e89fd9e4, type: 3}
+  m_Name: AbilitiesDictionary
+  m_EditorClassIdentifier: Assembly-CSharp::AbilitiesDictionary
+  abilities:
+  - {fileID: 11400000, guid: 37f7c4803497f9a4d9a8eb84d2fad93c, type: 2}
+  - {fileID: 11400000, guid: 7e6fee7924d3ea84aa63394b39443519, type: 2}
+  - {fileID: 11400000, guid: be74fd8ae1de4e547997a8dab5d3d7e5, type: 2}
+  - {fileID: 11400000, guid: 5f5e87293746cef45b5b11aff4df0c05, type: 2}
+  - {fileID: 11400000, guid: b0a79f01a5a4841478aa405f4c2186e1, type: 2}
+  - {fileID: 11400000, guid: d464b611e1e5ccb4a99b8255a60a8fcb, type: 2}
+  - {fileID: 11400000, guid: 134304af6f7778c498625dcddcdc0f21, type: 2}
+  - {fileID: 11400000, guid: b34bd51fba8372045806466467df1a28, type: 2}
+  - {fileID: 11400000, guid: d770cc2a9d6f76e42bc844b095b5412c, type: 2}
