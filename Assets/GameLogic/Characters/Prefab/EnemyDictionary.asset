@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a395374b1bc58bd4a893b040d3449a2c, type: 3}
+  m_Script: {fileID: 11500000, guid: d5e216c997a21f94caf177636b2b1a3d, type: 3}
   m_Name: EnemyDictionary
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDictionary
   enemies:

@@ -6,6 +6,7 @@ using UnityEngine.TextCore.Text;
 
 public class Character : MonoBehaviour
 {
+    [SerializeField] private string _charName;
     [SerializeField] private int _attStrength;
     [SerializeField] private int _attAgility;
     [SerializeField] private int _attStamina;
@@ -17,6 +18,7 @@ public class Character : MonoBehaviour
 
     public void LoadCharacter(CharacterStore character)
     {
+        _charName = character.charName;
         _attStrength = character.attStrength;
         _attAgility = character.attAgility;
         _attStamina = character.attStamina;
@@ -54,7 +56,7 @@ public class Character : MonoBehaviour
 
     public (int strength, int agility, int stamina) GetStats()
     {
-        return (_attStrength,_attAgility,_attStamina);
+        return (_attStrength, _attAgility, _attStamina);
     }
 
     public bool HasAbility(string abilityName) => _abilities.Contains(FindAbility(abilityName));
@@ -69,14 +71,15 @@ public class Character : MonoBehaviour
 
     public void RemoveAbility(Ability ability) => _abilities.Remove(ability);
 
-    public Ability FindAbility(string abilityName) => _abilities.Find(ability => ability.title == abilityName);
+    public Ability FindAbility(string abilityName) => _abilities.Find(ability => ability.idName == abilityName);
 
     public string FindNextAbility(string abilityName)
     {
         if (HasAbility(abilityName))
         {
-            return FindNextAbility(FindAbility(abilityName).title);
-        }else return abilityName;
+            return FindNextAbility(FindAbility(abilityName).nextAbility);
+        }
+        else return abilityName;
     }
 
     public List<Ability> FindAllAbilitiesOfType(AbilityType abilityType) => _abilities.FindAll(ability => ability.type == abilityType);
@@ -94,9 +97,11 @@ public class Character : MonoBehaviour
 
     public Damage DealDamage()
     {
-        if (_dummyWeapon !=0 ) return new Damage(_attStrength, _dummyWeapon, _weapon.GetDamageType(), 0);
+        if (_dummyWeapon != 0) return new Damage(_attStrength, _dummyWeapon, _weapon.GetDamageType(), 0);
         return new Damage(_attStrength, _weapon.GetDamage(), _weapon.GetDamageType(), 0);
     }
+
+    public string GetName() => _charName;
 }
 
 public class Damage
@@ -114,6 +119,23 @@ public class Damage
         this.dmgPerk = dmgPerk;
     }
 
+    public Damage(Damage damage)
+    {
+        this.dmgBase = damage.dmgBase;
+        this.dmgWeapon = damage.dmgWeapon;
+        this.damageType = damage.damageType;
+        this.dmgPerk = damage.dmgPerk;
+    }
+
+    public bool Compare(Damage damage)
+    {
+        bool result = false;
+        if (dmgBase != damage.dmgBase) result = true;
+        if (dmgWeapon != damage.dmgWeapon) result = true;
+        if(damageType != damage.damageType) result = true;
+        if (dmgPerk != damage.dmgPerk) result = true;
+        return result;
+    }
     public int TallyUpDamage() => dmgBase + dmgPerk + dmgWeapon;
 }
 public enum DamageType

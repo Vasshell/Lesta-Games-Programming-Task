@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: WarriorThree
   m_EditorClassIdentifier: Assembly-CSharp::Ability
   idName: warrior3
-  title: "\u0412\u043E\u0438\u043D \u0423\u0440\u043E\u0432\u0435\u043D\u044C 3"
+  upgradeTitle: "\u0412\u043E\u0438\u043D \u0423\u0440\u043E\u0432\u0435\u043D\u044C
+    3"
+  title: 
   description: "\u0421\u0438\u043B\u0430 +1"
   type: 2
   nextAbility: 

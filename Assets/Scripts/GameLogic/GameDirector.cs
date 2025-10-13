@@ -1,94 +1,157 @@
-using NUnit.Framework.Constraints;
 using System;
-using UnityEditor.SearchService;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Android;
 using UnityEngine.SceneManagement;
 
 public class GameDirector : MonoBehaviour
 {
-    public static GameState gameState;
+    [SerializeField] GameObject upgradeDirectorPrefab;
+    [SerializeField] GameObject fightDirectorPrefab;
+    [SerializeField] GameObject uiButtonPrefab;
+    [SerializeField] GameObject uiTextPrefab;
+    [SerializeField] Canvas _messageCanvas;
+    [SerializeField] UIPositionMarker _textPM;
+    [SerializeField] UIPositionMarker _buttonPM;
+    [SerializeField] List<AudioSource> _audioSources;
+    private GameState _gameState;
+    private int _wins = 0;
 
     private void Start()
     {
-        ChangeState("restart");
+        Load("restart");
     }
 
-    public void ChangeState(string state)
+    public void Load(string state)
     {
-        UnloadLastScene();
+        StartCoroutine(ChangeState(state));
+    }
+
+    public IEnumerator ChangeState(string state)
+    {
+        _messageCanvas.enabled = false;
+        SceneManager.sceneLoaded += MakeLastSceneActive;
+        yield return UnloadLastScene();
         switch (state)
         {
             case "newgame":
-                NewGame();
+                yield return NewGame();
                 break;
             case "fight":
-                Fight();
+                yield return Fight();
                 break;
             case "victory":
-                Victory();
+                yield return Victory();
                 break;
             case "defeat":
-                Defeat();
+                yield return Defeat();
                 break;
             case "restart":
-                MainMenu();
+                yield return MainMenu();
                 break;
             default:
                 throw new InvalidOperationException("Invalid state passed");
         }
-        SceneManager.sceneLoaded += MakeLastSceneActive;
     }
 
     private void MakeLastSceneActive(UnityEngine.SceneManagement.Scene arg0, LoadSceneMode arg1)
     {
-        SceneManager.SetActiveScene(SceneManager.GetSceneAt(GetLastSceneIndex()));
+        SceneManager.SetActiveScene(SceneManager.GetSceneAt(1));
     }
 
-    private void MainMenu()
+    private IEnumerator LoadScene(int index)
     {
-        gameState = GameState.MainMenu;
-        SceneManager.LoadScene(1, LoadSceneMode.Additive);
+        yield return SceneManager.LoadSceneAsync(index, LoadSceneMode.Additive);
     }
 
-    private void Defeat()
+    private IEnumerator MainMenu()
     {
-        throw new NotImplementedException();
+        _gameState = GameState.MainMenu;
+        yield return StartCoroutine(LoadScene(1));
+        _messageCanvas.enabled = true;
     }
 
-    private void Victory()
+    private IEnumerator DisplayMessage(string message, string buttontext)
     {
-        throw new NotImplementedException();
+        _messageCanvas.enabled = true;
+        var uiButtonObject = Instantiate(uiButtonPrefab, _messageCanvas.transform);
+        var uiButton = uiButtonObject.GetComponent<UIButton>();
+        uiButton.AssignCoorditates(_buttonPM.GetPosition());
+        var uiTextObject = Instantiate(uiTextPrefab, _messageCanvas.transform);
+        var uiText = uiTextObject.GetComponent<UIText>();
+        uiText.AssignCoordinates(_textPM.GetPosition());
+        uiText.AssignText(message);
+        uiButton.AssignText(buttontext);
+        bool buttonpressed = false;
+        uiButton.AssignDelegate(delegate { buttonpressed = true; });
+        while (!buttonpressed) yield return null;
+        Destroy(uiButtonObject);
+        Destroy(uiTextObject);
+        _messageCanvas.enabled = false;
     }
 
-    private void Fight()
+    private IEnumerator Defeat()
     {
-        gameState = GameState.Fight;
-        SceneManager.LoadScene(3, LoadSceneMode.Additive);
+        _messageCanvas.enabled = true;
+        yield return StartCoroutine(DisplayMessage("Вы погибли", "Начать заново"));
+        yield return MainMenu();
+        yield return null;
     }
 
-    private void NewGame()
+    private IEnumerator Victory()
     {
-        gameState = GameState.NewGame;
-        SceneManager.LoadScene(2, LoadSceneMode.Additive);
+        _wins += 1;
+        _messageCanvas.enabled = true;
+        if (_wins == 5)
+        {
+            _audioSources.Find(audio => audio.name == "BgMusic").Stop();
+            _audioSources.Find(audio => audio.name == "WinAudio").Play();
+            yield return StartCoroutine(DisplayMessage("Вы победили!", "Начать заново"));
+            yield return MainMenu();
+        }
+        else
+        {
+            yield return StartCoroutine(DisplayMessage($"Враг побежден!\nПрогресс: {_wins}/5", "Продолжить"));
+            _gameState = GameState.UpgradeMenu;
+            yield return StartCoroutine(LoadScene(2));
+            var director = Instantiate(upgradeDirectorPrefab).GetComponent<UpgradeDirector>();
+            StartCoroutine(director.Begin(_gameState));
+        }
+    }
+
+    private IEnumerator Fight()
+    {
+        _gameState = GameState.Fight;
+        yield return StartCoroutine(LoadScene(3));
+        var director = Instantiate(fightDirectorPrefab).GetComponent<FightDirector>();
+        StartCoroutine(director.Begin(_wins));
+    }
+
+    private IEnumerator NewGame()
+    {
+        _gameState = GameState.NewGame;
+        if (!_audioSources.Find(audio => audio.name == "BgMusic").isPlaying) _audioSources.Find(audio => audio.name == "BgMusic").Play();
+        _wins = 0;
+        yield return StartCoroutine(LoadScene(2));
+        var director = Instantiate(upgradeDirectorPrefab).GetComponent<UpgradeDirector>();
+        StartCoroutine(director.Begin(_gameState));
     }
 
     private int GetLastSceneIndex() => SceneManager.sceneCount - 1;
 
-    private void UnloadLastScene()
+    private IEnumerator UnloadLastScene()
     {
         SceneManager.SetActiveScene(SceneManager.GetSceneAt(0));
         var lastSceneIndex = GetLastSceneIndex();
-        if (lastSceneIndex > 0) SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(lastSceneIndex));
+        if (lastSceneIndex > 0) yield return SceneManager.UnloadSceneAsync(SceneManager.GetSceneAt(lastSceneIndex));
     }
 
-    public enum GameState
-    {
-        MainMenu,
-        NewGame,
-        UpgradeMenu,
-        Fight,
-        GameOver
-    }
-
+}
+public enum GameState
+{
+    MainMenu,
+    NewGame,
+    UpgradeMenu,
+    Fight,
+    GameOver
 }

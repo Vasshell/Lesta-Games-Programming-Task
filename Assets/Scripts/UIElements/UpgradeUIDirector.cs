@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -20,12 +21,13 @@ public class UpgradeUIDirector : MonoBehaviour
     private Canvas _canvas;
     private UIText _statText;
 
-    private void Start()
+    public IEnumerator Begin()
     {
         _canvas = GetComponentInParent<Canvas>();
         _statText = Instantiate(labelPrefab, _canvas.transform).GetComponent<UIText>();
         _statText.AssignCoordinates(_statTextCoords.GetPosition());
         SetFreeButtonsCoords();
+        yield break;
     }
 
     private void SetFreeButtonsCoords()
@@ -38,7 +40,7 @@ public class UpgradeUIDirector : MonoBehaviour
 
     public void DisplayStatNumbers((int strength, int agility, int stamina) stats)
     {
-        _statText.AssignText($"Сила: {stats.strength} Ловкость: {stats.agility} Выносливость: {stats.stamina}");
+        _statText.AssignText($"Сила: {stats.strength}\nЛовкость: {stats.agility}\nВыносливость: {stats.stamina}");
     }
 
     public void DisplayButton(UnityAction action, string text, string description = null)
@@ -52,6 +54,49 @@ public class UpgradeUIDirector : MonoBehaviour
             } 
         }
         throw new Exception("More buttons than expected");
+    }
+
+    private string DamageTypeToText(DamageType damageType)
+    {
+        string damageName = "Урон";
+        switch (damageType)
+        {
+            case DamageType.Blunt:
+                damageName = "Дробящий урон";
+                break;
+            case DamageType.Slash:
+                damageName = "Рубящий урон";
+                break;
+            case DamageType.Stab:
+                damageName = "Колющий урон";
+                break;
+            default:
+                break;
+        }
+        return damageName;
+    }
+
+    public void DisplayWeaponButton(Weapon weapon, UnityAction action, Weapon oldweapon = null)
+    {
+        _weaponButton = CreateNewButton(_weaponButtonCoords.GetPosition(), weapon.GetWpnName(), action);
+        _weaponButton.AssignImage(weapon.GetImage());
+        int damage = weapon.GetDamage();
+        DamageType damageType = weapon.GetDamageType();
+        var newdamageName = DamageTypeToText(weapon.GetDamageType());  
+        if (oldweapon != null)
+        {
+            var olddamageName = DamageTypeToText(oldweapon.GetDamageType());
+            _weaponButton.AssignDescription($"{newdamageName}: {damage}\nСейчас: {oldweapon.GetWpnName()} ({olddamageName}: {oldweapon.GetDamage()})");
+        }
+        else
+        {
+            _weaponButton.AssignDescription($"{newdamageName}: {damage}");
+        }
+    }
+
+    public void RemoveWeaponButton()
+    {
+        _weaponButton.DestroyButton();
     }
 
     private UIButton CreateNewButton(Vector2 coords, string text, UnityAction action, string description = null)

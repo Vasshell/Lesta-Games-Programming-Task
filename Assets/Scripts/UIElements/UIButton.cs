@@ -8,17 +8,19 @@ public class UIButton : MonoBehaviour
 {
     private TextMeshProUGUI _text;
     private Button _button;
-    private Image _image;
+    private Explainer _explainer;
+    [SerializeField] private Image _image;
     private RectTransform _rectTransform;
-    private string _hoverDescription;
 
     void Awake()
     {   
         _rectTransform = GetComponent<RectTransform>();
         _text = GetComponentInChildren<TextMeshProUGUI>();                   
         _button = GetComponent<Button>();
-        _image = GetComponent<Image>();
+        _explainer = GetComponent<Explainer>();
+        _image.enabled = false;
     }
+
 
     public void AssignCoorditates(Vector2 coords)
     {
@@ -30,9 +32,10 @@ public class UIButton : MonoBehaviour
         _text.text = text;
     }
 
-    public void AssignImage(Image image)
+    public void AssignImage(Sprite image)
     {
-        _image = image;
+        _image.sprite = image;
+        _image.enabled = true;
     }
 
     public void AssignDelegate(UnityAction unityAction)
@@ -40,7 +43,10 @@ public class UIButton : MonoBehaviour
         _button.onClick.AddListener(unityAction);
     }
 
-    public void AssignDescription(string description) => _hoverDescription = description;
+    public void AssignDescription(string description)
+    {
+        _explainer.SetText(description);
+    }
 
     public Vector2 GetCoordinates() => _rectTransform.anchoredPosition;
     public void DestroyButton() => Destroy(this.gameObject);

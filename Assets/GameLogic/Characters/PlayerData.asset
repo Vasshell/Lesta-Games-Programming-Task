@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bacf6ead8479ed40b425d20ba1bcb5c, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: Assembly-CSharp::CharacterStore
-  charName: player
+  charName: "\u0413\u0435\u0440\u043E\u0439"
   attStrength: 0
   attAgility: 0
   attStamina: 0

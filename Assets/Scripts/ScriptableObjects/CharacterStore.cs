@@ -4,6 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CharacterStore", menuName = "Scriptable Objects/Character")]
 public class CharacterStore : ScriptableObject
 {
+    [SerializeField] public string charName;
     [SerializeField] public int attStrength;
     [SerializeField] public int attAgility;
     [SerializeField] public int attStamina;

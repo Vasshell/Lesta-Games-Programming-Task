@@ -16,3 +16,4 @@ MonoBehaviour:
   wpnName: "\u0414\u0443\u0431\u0438\u043D\u0430"
   damage: 3
   damageType: 0
+  image: {fileID: 21300172, guid: 15b2d2faaecad4bfb9edc6585d94f509, type: 3}
